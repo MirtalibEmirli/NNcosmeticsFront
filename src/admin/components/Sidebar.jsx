@@ -8,7 +8,8 @@ const menuItems = [
   { name: 'Products', path: '/products' },
   { name: 'ProductsForm', path: '/productsform' },
   { name: 'Return Requests', path: '/returns' },
-  { name: 'StatisticsPage', path: '/statisticspage' }
+  { name: 'StatisticsPage', path: '/statisticspage' },
+  // { name: 'Login', path: '/login' },
 ];
 
 export default function Sidebar() {

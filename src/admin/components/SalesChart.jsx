@@ -1,5 +1,4 @@
-// src/components/SalesChart.jsx
-
+ 
 import {
   AreaChart,
   Area,

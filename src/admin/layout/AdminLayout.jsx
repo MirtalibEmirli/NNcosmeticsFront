@@ -1,10 +1,10 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
+import Sidebar from '@/admin/components/Sidebar';
+import Header from '@/admin/components/Header';
 
-const MainLayout = () => {
+const AdminLayout = () => {
   return (
     <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#f5f5fa' }}>
       <Sidebar />
@@ -18,4 +18,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default AdminLayout;
