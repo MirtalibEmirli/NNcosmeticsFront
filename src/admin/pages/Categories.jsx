@@ -13,58 +13,84 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  IconButton
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Edit, Delete } from '@mui/icons-material';
-
-const initialCategories = [
-  { id: 1, name: 'Makeup' },
-  { id: 2, name: 'Skincare' },
-  { id: 3, name: 'Jewelry' },
-  { id: 4, name: 'Hair Care' }
-];
+import axios from 'axios';
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [formValue, setFormValue] = useState('');
+  const [parentId, setParentId] = useState('');
   const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://104.248.36.17:7013/api/Categories")
+      .then(res => setCategories(res.data.data))
+      .catch(err => console.error("Kateqoriyalar alınmadı:", err));
+  }, []);
 
   const handleOpen = () => {
     setFormValue('');
+    setParentId('');
     setEditId(null);
     setOpen(true);
   };
 
   const handleEdit = (category) => {
     setFormValue(category.name);
+    setParentId(category.parentCategoryId || '');
     setEditId(category.id);
     setOpen(true);
   };
 
   const handleDelete = (id) => {
-    setCategories(categories.filter((cat) => cat.id !== id));
+    axios.delete(`http://104.248.36.17:7013/api/Categories/${id}`)
+      .then(() => setCategories(categories.filter(cat => cat.id !== id)))
+      .catch(err => console.error("Silinmə zamanı xəta:", err));
   };
 
   const handleSave = () => {
     if (formValue.trim() === '') return;
+    const newCategory = {
+      name: formValue,
+      parentId: parentId || null
+    };
+
     if (editId !== null) {
-      setCategories(
-        categories.map((cat) =>
-          cat.id === editId ? { ...cat, name: formValue } : cat
-        )
-      );
+      axios.put(`http://104.248.36.17:7013/api/Categories/${editId}`, {
+        ...newCategory,
+        id: editId
+      })
+        .then(() => {
+          setCategories(categories.map(cat =>
+            cat.id === editId ? { ...cat, ...newCategory } : cat
+          ));
+          setOpen(false);
+        })
+        .catch(err => console.error("Redaktə zamanı xəta:", err));
     } else {
-      const newId = categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
-      setCategories([...categories, { id: newId, name: formValue }]);
+      axios.post("http://104.248.36.17:7013/api/Categories", newCategory)
+        .then(() => {
+          // reload etmək daha yaxşıdır çünki id backenddən gəlir
+          return axios.get("http://104.248.36.17:7013/api/Categories");
+        })
+        .then(res => {
+          setCategories(res.data.data);
+          setOpen(false);
+        })
+        .catch(err => console.error("Əlavə olunmadı:", err));
     }
-    setOpen(false);
   };
 
   return (
     <Box className="p-8 font-[Poppins] text-gray-800 space-y-6">
-      {/* Başlıq */}
       <Box className="flex items-center justify-between">
         <Typography variant="h5" className="font-bold text-purple-800 text-2xl">
           Kateqoriyalar
@@ -78,29 +104,30 @@ export default function CategoriesPage() {
         </Button>
       </Box>
 
-      {/* Açıklama */}
       <Typography className="text-gray-600 text-sm">
         Aşağıda məhsul kateqoriyalarını görə və idarə edə bilərsiniz.
       </Typography>
 
-      {/* Cədvəl */}
       <Paper className="rounded-xl shadow-sm overflow-hidden">
         <Table>
           <TableHead className="bg-purple-50">
             <TableRow>
               <TableCell className="font-semibold text-gray-700">ID</TableCell>
               <TableCell className="font-semibold text-gray-700">Kateqoriya Adı</TableCell>
+              <TableCell className="font-semibold text-gray-700">Ana Kateqoriya</TableCell>
               <TableCell className="font-semibold text-gray-700">Əməliyyat</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {categories.map((cat) => (
-              <TableRow
-                key={cat.id}
-                className="hover:bg-purple-50 transition duration-200 ease-in-out"
-              >
+              <TableRow key={cat.id}>
                 <TableCell>{cat.id}</TableCell>
                 <TableCell>{cat.name}</TableCell>
+                <TableCell>
+                  {cat.parentCategoryId
+                    ? categories.find(parent => parent.id === cat.parentCategoryId)?.name
+                    : "-"}
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEdit(cat)} color="primary">
                     <Edit fontSize="small" />
@@ -115,7 +142,6 @@ export default function CategoriesPage() {
         </Table>
       </Paper>
 
-      {/* Modal */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{editId !== null ? 'Kateqoriyanı Redaktə Et' : 'Yeni Kateqoriya Əlavə Et'}</DialogTitle>
         <DialogContent>
@@ -128,6 +154,24 @@ export default function CategoriesPage() {
             value={formValue}
             onChange={(e) => setFormValue(e.target.value)}
           />
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="parent-label">Ana Kateqoriya</InputLabel>
+            <Select
+              labelId="parent-label"
+              value={parentId}
+              onChange={(e) => setParentId(e.target.value)}
+              label="Ana Kateqoriya"
+            >
+              <MenuItem value="">Yoxdur (Ana)</MenuItem>
+              {categories
+                .filter(c => c.id !== editId)
+                .map((cat) => (
+                  <MenuItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} className="text-gray-600">Ləğv Et</Button>

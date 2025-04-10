@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Box,
   Grid,
@@ -15,95 +15,34 @@ import SearchBar from "../components/SearchBar";
 import ParentCategoryCard from "../components/ParentCategoryCard";
 import PopularProductCard from "../components/PopularProductCard";
 import BasketDrawer from "../components/BasketDrawer";
+import axios from "axios";
 
 // Mock Data
 const mockParentCategories = [
   { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 1, name: "Pomada", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
- ];
+ ]
 
 const topProducts = [
   { id: 1, name: "Kiko Pomada qirmizi qalin", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
   { id: 2, name: "Emily dodaq korandasi brown", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
-  { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
+ { id: 4, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
+  { id: 44, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
+  { id: 45, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
+  { id: 46, name: "Məhsul 4", image: "https://akn-kikomilano.a-cdn.akinoncloud.com/products/2024/08/05/5468/03a18ca4-bc16-49d3-9db0-cae69e42ef3c_size500x500_cropCenter.jpg" },
 
 ];
 
-const SellPage = () => {
-const [basketItems, setBasketItems] = useState([]);
+const  SellPage =  () => {
+const [basketItems, setBasketItems] = useState([]); 
+useEffect(() => { 
+  const fetchData = async () => {
+    const brands = await axios.get("http://104.248.36.17:7013/api/brands");
+    console.log(brands.data);
+    console.log(1111111);
+  };
+
+  fetchData();
+}, []);
 
   const [selectedParent, setSelectedParent] = useState(null);
   const [openBasket, setOpenBasket] = useState(false);

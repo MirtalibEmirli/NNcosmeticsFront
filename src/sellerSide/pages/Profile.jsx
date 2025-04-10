@@ -1,12 +1,31 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import { LogOut, Mail, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const SellerProfile = () => {
-  const fullName = 'Test User';
-  const email = 'testuser@nncosmetics.az';
+const Profile = () => {
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (userId) {
+      axios
+        .get(`http://104.248.36.17:7013/api/Login/${userId}`)
+        .then((res) => setUser(res.data))
+        .catch((err) => {
+          console.error("İstifadəçi tapılmadı:", err);
+          // alert("İstifadəçi məlumatı alınmadı.");
+        });
+    }
+  }, [userId]);
 
   const handleLogout = () => {
-    // logout logic
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    navigate("/");
   };
 
   return (
@@ -22,12 +41,12 @@ const SellerProfile = () => {
 
           <div className="flex items-center gap-3 text-gray-700">
             <User />
-            <span className="font-medium">Ad Soyad:</span> {fullName}
+            <span className="font-medium">Ad Soyad:</span> {user?.fullName || "Yüklənir..."}
           </div>
 
           <div className="flex items-center gap-3 text-gray-700">
             <Mail />
-            <span className="font-medium">Email:</span> {email}
+            <span className="font-medium">Email:</span> {user?.email || "Yüklənir..."}
           </div>
 
           <Button
@@ -46,4 +65,4 @@ const SellerProfile = () => {
   );
 };
 
-export default SellerProfile;
+export default Profile;

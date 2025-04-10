@@ -15,6 +15,8 @@ import CloseIcon from "@mui/icons-material/Close";
 const BasketDrawer = ({ open, onClose, basketItems = [], onConfirm }) => {
   const [paymentType, setPaymentType] = useState("cash");
 
+  
+
   const total = basketItems.reduce(
     (sum, item) => sum + item.price * item.count,
     0

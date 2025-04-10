@@ -1,15 +1,15 @@
 import { NavLink } from 'react-router-dom';
 
 const menuItems = [
-  { name: 'Dashboard', path: '/' },
-  { name: 'Categories', path: '/categories' },
-  { name: 'Brands', path: '/brands' },
-  { name: 'Sellers', path: '/sellers' },
-  { name: 'Products', path: '/products' },
-  { name: 'ProductsForm', path: '/productsform' },
-  { name: 'Return Requests', path: '/returns' },
-  { name: 'StatisticsPage', path: '/statisticspage' },
-  // { name: 'Login', path: '/login' },
+  { name: 'Dashboard', path: '/admin/dashboard' },
+  { name: 'Categories', path: '/admin/categories' },
+  { name: 'Brands', path: '/admin/brands' },
+  { name: 'Sellers', path: '/admin/sellers' },
+  { name: 'Products', path: '/admin/products' },
+  { name: 'Products Form', path: '/admin/productsform' },
+  { name: 'Return Requests', path: '/admin/returns' },
+  { name: 'Statistics', path: '/admin/statisticspage' },
+  { name: 'AddSeller', path: '/admin/addseller' },
 ];
 
 export default function Sidebar() {
@@ -22,8 +22,10 @@ export default function Sidebar() {
             key={index}
             to={item.path}
             className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-medium text-left ${
-                isActive ? 'bg-purple-300 text-purple-900' : 'text-purple-700 hover:bg-purple-200'
+              `px-4 py-2 rounded-lg font-medium text-left transition-all duration-200 ${
+                isActive
+                  ? 'bg-purple-300 text-purple-900'
+                  : 'text-purple-700 hover:bg-purple-200'
               }`
             }
           >

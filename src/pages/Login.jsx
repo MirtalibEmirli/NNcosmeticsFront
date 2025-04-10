@@ -1,45 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import axios from "axios";
 
-
- 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Dummy token-based redirect logic
-    const fakeToken = {
-      token: "xyz123",
-      role: "admin", // dəyiş: 'user' => seller yönləndirməsi üçün
-    };
+    try {
+      const response = await axios.post("http://104.248.36.17:7013/api/Login", {
+        email,
+        password,
+      });
 
-    if (fakeToken.role === "admin") {
-      navigate("/"); // Admin dashboard
-    } else {
-      navigate("/seller"); // Seller panel
+      const token = response.data.accessToken; // ✅ typo düzəldildi
+      console.log("Gələn token:", token);
+
+      const decoded = jwt_decode(token);
+      console.log("Decoded token:", decoded);
+
+      const role =
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  
+    
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
+      localStorage.setItem("role", role);
+      if (role === "Admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "0") {
+        navigate("/seller/dashboard");
+      }
+        
+
+      
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Giriş uğursuz oldu.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="flex w-full max-w-6xl shadow-xl rounded-2xl overflow-hidden">
-        {/* Left - Animation background */}
-        <div className="w-1/2 hidden md:flex items-center justify-center bg-black relative overflow-hidden">
-          <iframe
-            src="https://www.youtube.com/embed/9RI5UmdbMhU?autoplay=1&mute=1&loop=1&playlist=9RI5UmdbMhU&controls=0&showinfo=0&modestbranding=1"
-            title="Cosmetics Animation"
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none z-0"
-          />
-          
-        </div>
-
-        {/* Right - Login form */}
+        {/* Sağ panel - Login form */}
         <div className="w-full md:w-1/2 bg-[#0f0f1a] p-10 flex flex-col justify-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -57,6 +66,8 @@ const LoginPage = () => {
                 </label>
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full p-3 rounded-md bg-[#1a1a2e] text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
                   placeholder="example@nncosmetics.az"
@@ -64,9 +75,13 @@ const LoginPage = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm text-white">Password</label>
+                <label className="block mb-1 text-sm text-white">
+                  Password
+                </label>
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full p-3 rounded-md bg-[#1a1a2e] text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
                   placeholder="••••••••"
